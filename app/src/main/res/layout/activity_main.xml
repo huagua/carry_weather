@@ -9,42 +9,32 @@
     tools:context=".MainActivity"
     android:background="@drawable/bg_bad_weather">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?attr/actionBarSize">
 
 
         <TextView
             android:id="@+id/city_name"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:gravity="center"
+            android:layout_centerInParent="true"
             android:textSize="20sp"
-            android:padding="10dp"
-            android:layout_marginLeft="90dp"
             android:text="大兴区"/>
 
 
 
         <TextView
             android:id="@+id/update_time"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:textSize="15sp"
-            android:padding="10dp"
             android:text="更新时间"/>
 
-    </LinearLayout>
-
-
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"/>
+    </RelativeLayout>
 
 
     <ImageView
