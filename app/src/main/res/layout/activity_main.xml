@@ -9,6 +9,8 @@
     tools:context=".MainActivity"
     android:background="@drawable/bg_clouds">
 
+
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize">
@@ -157,7 +159,6 @@
             android:textColor="#000"/>
 
     </LinearLayout>
-
 
 
 </LinearLayout>

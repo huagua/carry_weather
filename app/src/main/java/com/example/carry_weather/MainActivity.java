@@ -1,5 +1,6 @@
 package com.example.carry_weather;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carry_weather.gson.Weather;
+import com.example.carry_weather.service.AutoUpdateService;
 import com.example.carry_weather.util.HttpUtil;
 import com.example.carry_weather.util.Utility;
 
@@ -41,17 +43,19 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
-
         if(weatherString != null)
         {
             //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
+
             showWeatherInfo(weather);
         }else{
             //无缓存时去服务器查询天气
+
             String weatherId = getIntent().getStringExtra("weather_id");
             requestWeather(weatherId);
         }
+
     }
 
     /**
@@ -103,19 +107,29 @@ public class MainActivity extends AppCompatActivity {
      * */
     public void showWeatherInfo(Weather weather){
 
-        String cityName = weather.basic.cityName;
-        String updateTime = weather.basic.update.updateTime.split(" ")[1];
-        String degree = weather.now.temperature;
-        String weatherInfo = weather.now.more.info;
-        String windDir = weather.now.wind_dir;
-        String windSc = weather.now.wind_sc;
+        if(weather != null && "ok".equals(weather.status)){
 
-        titleCity.setText(cityName);
-        titleUpdateTime.setText(updateTime);
-        degreeText.setText(degree);
-        weatherInfoText.setText(weatherInfo);
-        windDirText.setText(windDir);
-        windScText.setText(windSc);
+            String cityName = weather.basic.cityName;
+            String updateTime = weather.basic.update.updateTime.split(" ")[1];
+            String degree = weather.now.temperature;
+            String weatherInfo = weather.now.more.info;
+            String windDir = weather.now.wind_dir;
+            String windSc = weather.now.wind_sc;
+
+            titleCity.setText(cityName);
+            titleUpdateTime.setText(updateTime);
+            degreeText.setText(degree);
+            weatherInfoText.setText(weatherInfo);
+            windDirText.setText(windDir);
+            windScText.setText(windSc);
+
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startService(intent);
+        }else{
+            Toast.makeText(MainActivity.this, "获取天气信息失败",Toast.LENGTH_SHORT).show();
+        }
+
+
 
     }
 
