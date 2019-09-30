@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="@drawable/bg_bad_weather">
+    android:background="@drawable/bg_clouds">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -20,9 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="20sp"
-            android:text="大兴区"/>
-
-
+            />
 
         <TextView
             android:id="@+id/update_time"
@@ -32,7 +30,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textSize="15sp"
-            android:text="更新时间"/>
+            />
 
     </RelativeLayout>
 
@@ -42,7 +40,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/little_snow"/>
+        android:src="@drawable/sun"/>
 
     <LinearLayout
         android:orientation="horizontal"
@@ -57,7 +55,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="2"
         android:textSize="60sp"
         android:textColor="#000"/>
 
@@ -86,7 +83,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="小雪"
             android:textSize="20sp"
             android:textColor="#000"
             android:layout_marginRight="10dp"/>
@@ -119,22 +115,20 @@
         android:layout_margin="10dp">
 
         <TextView
-            android:id="@+id/title_wind"
+            android:id="@+id/wind_dir"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="风力："
+            android:layout_weight="2"
+            android:gravity="end"
             android:textSize="15sp"
             android:textColor="#000"/>
 
         <TextView
-            android:id="@+id/wind"
+            android:id="@+id/wind_sc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:gravity="left"
-            android:text="西北风3级"
+            android:gravity="start"
             android:textSize="15sp"
             android:textColor="#000"/>
 
@@ -147,7 +141,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:gravity="right"
+            android:gravity="end"
             android:text="空气质量："
             android:textSize="15sp"
             android:textColor="#000"/>
@@ -157,7 +151,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="left"
+            android:gravity="start"
             android:text="良 87"
             android:textSize="15sp"
             android:textColor="#000"/>
