@@ -20,8 +20,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#8000"
-        android:padding="10dp">
+        android:background="#025953"
+        android:padding="5dp">
 
 
         <TextView
@@ -47,10 +47,10 @@
 
     <ImageView
         android:id="@+id/weather_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
-        android:src="@drawable/sun"/>
+        />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -168,7 +168,7 @@
             android:id="@+id/air_quality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="1.5"
             android:gravity="center"
             android:textSize="15sp"
             android:textColor="#fff000"/>

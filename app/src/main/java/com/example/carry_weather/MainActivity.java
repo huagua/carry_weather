@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView bingPicImg;
     private TextView airQualityText;
     private TextView airPm25Text;
+    private ImageView weatherImage;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -46,9 +47,10 @@ public class MainActivity extends AppCompatActivity {
         weatherInfoText = findViewById(R.id.weather_info);
         windDirText = findViewById(R.id.wind_dir);
         windScText = findViewById(R.id.wind_sc);
-        bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
+        bingPicImg = findViewById(R.id.bing_pic_img);
         airQualityText = findViewById(R.id.air_quality);
         airPm25Text = findViewById(R.id.air_pm25);
+        weatherImage = findViewById(R.id.weather_image);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
@@ -73,6 +75,9 @@ public class MainActivity extends AppCompatActivity {
             String weatherId = getIntent().getStringExtra("weather_id");
             requestWeather(weatherId);
         }
+
+
+
 
     }
 
@@ -117,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+
         loadBingPic();
 
     }
@@ -148,6 +154,25 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);
+
+            switch (weatherInfo)
+            {
+                case "晴":
+                    weatherImage.setImageResource(R.drawable.sun);
+                    break;
+
+                case "多云":
+                    weatherImage.setImageResource(R.drawable.clouds);
+                    break;
+                case "阴" :
+                    weatherImage.setImageResource(R.drawable.overcast);
+                    break;
+
+                    default:
+                        weatherImage.setImageResource(R.drawable.sun);
+                        break;
+            }
+
 
         }else{
             Toast.makeText(MainActivity.this, "获取天气信息失败",Toast.LENGTH_SHORT).show();
