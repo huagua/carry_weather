@@ -4,11 +4,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.carry_weather.gson.Weather;
 import com.example.carry_weather.service.AutoUpdateService;
 import com.example.carry_weather.util.HttpUtil;
@@ -28,8 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView weatherInfoText;
     private TextView windDirText;
     private TextView windScText;
+    private ImageView bingPicImg;
+    private TextView airQualityText;
+    private TextView airPm25Text;
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -40,9 +46,21 @@ public class MainActivity extends AppCompatActivity {
         weatherInfoText = findViewById(R.id.weather_info);
         windDirText = findViewById(R.id.wind_dir);
         windScText = findViewById(R.id.wind_sc);
+        bingPicImg = (ImageView) findViewById(R.id.bing_pic_img);
+        airQualityText = findViewById(R.id.air_quality);
+        airPm25Text = findViewById(R.id.air_pm25);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
+        String bingPic = prefs.getString("bing_pic", null);
+
+        if(bingPic != null)
+        {
+            Glide.with(this).load(bingPic).into(bingPicImg);
+        }else{
+            loadBingPic();
+        }
+
         if(weatherString != null)
         {
             //有缓存时直接解析天气数据
@@ -99,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        loadBingPic();
 
     }
 
@@ -114,7 +133,9 @@ public class MainActivity extends AppCompatActivity {
             String degree = weather.now.temperature;
             String weatherInfo = weather.now.more.info;
             String windDir = weather.now.wind_dir;
-            String windSc = weather.now.wind_sc;
+            String windSc = weather.now.wind_sc+"级";
+            String airQuality = weather.aqi.city.air_quality;
+            String airPm25 = weather.aqi.city.air_pm25;
 
             titleCity.setText(cityName);
             titleUpdateTime.setText(updateTime);
@@ -122,16 +143,43 @@ public class MainActivity extends AppCompatActivity {
             weatherInfoText.setText(weatherInfo);
             windDirText.setText(windDir);
             windScText.setText(windSc);
+            airPm25Text.setText(airPm25);
+            airQualityText.setText(airQuality);
 
             Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);
+
         }else{
             Toast.makeText(MainActivity.this, "获取天气信息失败",Toast.LENGTH_SHORT).show();
         }
 
+    }
 
+    private void loadBingPic(){
+        String requestBingPic = "http://guolin.tech/api/bing_pic";
+        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String bingPic = response.body().string();
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+                editor.putString("bing_pic", bingPic);
+                editor.apply();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(MainActivity.this).load(bingPic).into(bingPicImg);
+                    }
+                });
+            }
+        });
 
     }
+
 
 
 

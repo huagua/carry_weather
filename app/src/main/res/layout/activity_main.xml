@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/bg_clouds">
+    tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/bing_pic_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize">
+        android:layout_height="wrap_content"
+        android:background="#8000"
+        android:padding="10dp">
 
 
         <TextView
@@ -22,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textSize="20sp"
-            />
+            android:textColor="#fff000"/>
 
         <TextView
             android:id="@+id/update_time"
@@ -32,15 +40,15 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:textSize="15sp"
-            />
+            android:textColor="#fff000"/>
 
     </RelativeLayout>
 
 
     <ImageView
         android:id="@+id/weather_image"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/sun"/>
 
@@ -94,7 +102,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:text="2~"
             android:textSize="20sp"
             android:textColor="#000"/>
 
@@ -104,7 +111,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:layout_gravity="center_horizontal"
-            android:text="5℃"
             android:textSize="20sp"
             android:textColor="#000"/>
 
@@ -114,51 +120,71 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+        android:layout_margin="10dp"
+        android:padding="10dp"
+        android:background="#8000">
+
+        <TextView
+            android:id="@+id/title_wind"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="风力:"
+            android:textColor="#fff000"
+            android:textSize="15sp"/>
 
         <TextView
             android:id="@+id/wind_dir"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="end"
+            android:layout_weight="1.5"
+            android:gravity="center"
             android:textSize="15sp"
-            android:textColor="#000"/>
+            android:textColor="#fff000"/>
+
 
         <TextView
             android:id="@+id/wind_sc"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="start"
+            android:layout_weight="1"
+            android:gravity="center"
             android:textSize="15sp"
-            android:textColor="#000"/>
+            android:textColor="#fff000"/>
 
-        <View
-            android:layout_width="10dp"
-            android:layout_height="match_parent"/>
 
         <TextView
             android:id="@+id/title_air_quality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="end"
+            android:layout_weight="2.5"
+            android:gravity="center"
             android:text="空气质量："
             android:textSize="15sp"
-            android:textColor="#000"/>
+            android:textColor="#fff000"/>
 
         <TextView
             android:id="@+id/air_quality"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:gravity="start"
-            android:text="良 87"
+            android:gravity="center"
             android:textSize="15sp"
-            android:textColor="#000"/>
+            android:textColor="#fff000"/>
+
+        <TextView
+            android:id="@+id/air_pm25"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textColor="#fff000"/>
+
 
     </LinearLayout>
 
+    </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>
