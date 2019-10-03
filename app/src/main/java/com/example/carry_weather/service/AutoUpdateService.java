@@ -29,8 +29,9 @@ public class AutoUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         updateWeather();
+        updateBingPic();
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 30*60*1000;
+        int anHour = 60*1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         Intent i = new Intent(this, AutoUpdateService.class);
         PendingIntent pi = PendingIntent.getService(this, 0, i, 0);
@@ -72,4 +73,40 @@ public class AutoUpdateService extends Service {
             });
         }
     }
+
+    /**
+     * 更新必应每日一图
+     * */
+
+    private void updateBingPic(){
+
+        String bingPic = "https://api.neweb.top/bing.php";
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
+        editor.putString("bing_pic", bingPic);
+        editor.apply();
+
+    }
+
+    /*
+    private void updateBingPic(){
+        String requestBingPic = "http://guolin.tech/api/bing_pic";
+        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String bingPic = response.body().string();
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
+                editor.putString("bing_pic", bingPic);
+                editor.apply();
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+        });
+    }
+    */
+
 }

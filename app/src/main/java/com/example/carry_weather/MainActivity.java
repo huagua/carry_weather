@@ -155,13 +155,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*
     private void loadBingPic(){
         String requestBingPic = "http://guolin.tech/api/bing_pic";
         HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
@@ -176,9 +173,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
         });
 
     }
+    */
+
+    private void loadBingPic(){
+
+        final String bingPic = "https://api.neweb.top/bing.php";
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+        editor.putString("bing_pic", bingPic);
+        editor.apply();
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Glide.with(MainActivity.this).load(bingPic).into(bingPicImg);
+            }
+        });
+
+    }
+
 
 
 
