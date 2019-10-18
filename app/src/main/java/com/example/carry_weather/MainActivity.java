@@ -16,12 +16,6 @@ import com.example.carry_weather.service.AutoUpdateService;
 import com.example.carry_weather.util.HttpUtil;
 import com.example.carry_weather.util.Utility;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 public class MainActivity extends AppCompatActivity {
 
     private TextView titleCity;
@@ -88,6 +82,25 @@ public class MainActivity extends AppCompatActivity {
 
         String weatherUrl = "http://guolin.tech/api/weather?cityid=CN101011100&key=d5be5607186b4b8f8d21ff4750d3cad1";
 
+        final String response =  HttpUtil.sendRequestWithHttpUrl(weatherUrl).toString();
+        final Weather weather = Utility.handleWeatherResponse(response);
+
+        runOnUiThread(new Runnable(){
+            @Override
+            public void run(){
+                if(weather != null && "ok".equals(weather.status)){
+                    SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
+                    editor.putString("weather", response);
+                    editor.apply();
+                    showWeatherInfo(weather);
+                }else{
+                    Toast.makeText(MainActivity.this,"获取天气信息失败",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+
+        /*
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback(){
 
             @Override
@@ -122,6 +135,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+         */
 
         loadBingPic();
 
@@ -180,35 +194,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*
-    private void loadBingPic(){
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
-        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String bingPic = response.body().string();
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).edit();
-                editor.putString("bing_pic", bingPic);
-                editor.apply();
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(MainActivity.this).load(bingPic).into(bingPicImg);
-                    }
-                });
-            }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-        });
-
-    }
-    */
-
     private void loadBingPic(){
 
         final String bingPic = "https://api.neweb.top/bing.php";
@@ -218,7 +203,10 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Glide.with(MainActivity.this).load(bingPic).into(bingPicImg);
+                //将bingPic加载到bingPicImg中
+                Glide.with(MainActivity.this)
+                        .load(bingPic)
+                        .into(bingPicImg);
             }
         });
 
