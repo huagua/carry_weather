@@ -13,12 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".CityActivity"></activity>
+
         <service
             android:name=".service.AutoUpdateService"
             android:enabled="true"
-            android:exported="true">
-
-        </service>
+            android:exported="true"></service>
 
         <activity android:name=".MainActivity">
             <intent-filter>

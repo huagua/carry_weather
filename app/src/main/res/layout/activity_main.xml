@@ -23,24 +23,43 @@
         android:background="#025953"
         android:padding="5dp">
 
-
-        <TextView
-            android:id="@+id/city_name"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="20sp"
-            android:textColor="#fff000"/>
+            android:layout_centerInParent="true">
 
-        <TextView
-            android:id="@+id/update_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            <TextView
+                android:id="@+id/city_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="20sp"
+                android:textColor="#fff000"/>
+
+            <TextView
+                android:id="@+id/update_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:textSize="10sp"
+                android:textColor="#fff000"/>
+
+
+        </LinearLayout>
+
+
+
+        <Button
+            android:id="@+id/city_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:textSize="15sp"
-            android:textColor="#fff000"/>
+            android:text="城市"
+            android:textSize="10sp"
+            android:background="#025953"/>
 
     </RelativeLayout>
 

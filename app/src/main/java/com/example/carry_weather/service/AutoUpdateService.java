@@ -13,12 +13,6 @@ import com.example.carry_weather.gson.Weather;
 import com.example.carry_weather.util.HttpUtil;
 import com.example.carry_weather.util.Utility;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
 public class AutoUpdateService extends Service {
 
     @Override
@@ -46,12 +40,23 @@ public class AutoUpdateService extends Service {
     private void updateWeather(){
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
+
         if(weatherString != null){
             //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
             String weatherId = weather.basic.weatherId;
             String weatherUrl = "http://guolin.tech/api/weather?cityid=CN101011100&key=d5be5607186b4b8f8d21ff4750d3cad1";
 
+            final String response =  HttpUtil.sendRequestWithHttpUrl(weatherUrl).toString();
+            weather = Utility.handleWeatherResponse(response);
+
+            if(weather != null && "ok".equals(weather.status)){
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
+                editor.putString("weather", response);
+                editor.apply();
+            }
+
+            /*
             HttpUtil.sendOkHttpRequest(weatherUrl, new Callback(){
 
                 @Override
@@ -71,6 +76,8 @@ public class AutoUpdateService extends Service {
                 }
 
             });
+
+             */
         }
     }
 

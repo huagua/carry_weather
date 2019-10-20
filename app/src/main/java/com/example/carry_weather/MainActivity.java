@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView airQualityText;
     private TextView airPm25Text;
     private ImageView weatherImage;
+    private Button cityButton;
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -45,6 +48,16 @@ public class MainActivity extends AppCompatActivity {
         airQualityText = findViewById(R.id.air_quality);
         airPm25Text = findViewById(R.id.air_pm25);
         weatherImage = findViewById(R.id.weather_image);
+        cityButton = findViewById(R.id.city_button);
+
+        //按钮点击跳转到选择城市的界面
+        cityButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(MainActivity.this, CityActivity.class);
+                startActivity(intent);
+            }
+        });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
