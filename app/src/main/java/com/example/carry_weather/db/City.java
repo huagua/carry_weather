@@ -1,8 +1,8 @@
 package com.example.carry_weather.db;
 
-import org.litepal.crud.DataSupport;
+import org.litepal.crud.LitePalSupport;
 
-public class City extends DataSupport {
+public class City extends LitePalSupport {
 
     private int id;
     private int cityCode;
@@ -24,10 +24,7 @@ public class City extends DataSupport {
         return cityCode;
     }
 
-    public void setCityCode(int cityCode)
-    {
-        this.cityCode = cityCode;
-    }
+    public void setCityCode(int cityCode) { this.cityCode = cityCode; }
 
     public String getCityName()
     {

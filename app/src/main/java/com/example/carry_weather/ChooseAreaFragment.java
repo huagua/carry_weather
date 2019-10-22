@@ -1,6 +1,7 @@
 package com.example.carry_weather;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -19,7 +21,7 @@ import com.example.carry_weather.db.Province;
 import com.example.carry_weather.util.HttpUtil;
 import com.example.carry_weather.util.Utility;
 
-import org.litepal.crud.DataSupport;
+import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class ChooseAreaFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
+
 
     /**
      * 省列表
@@ -89,6 +92,12 @@ public class ChooseAreaFragment extends Fragment {
                 } else if (currentLevel == LEVEL_CITY) {
                     selectedCity = cityList.get(position);
                     queryCounties();
+                }else if(currentLevel == LEVEL_COUNTY) {
+                    String weatherId = countyList.get(position).getWeatherId();
+                    Intent intent = new Intent(getActivity(), weatherActivity.class);
+                    intent.putExtra("weather_Id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
                 }
             }
         });
@@ -114,7 +123,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryProvinces() {
         titleText.setText("中国");
         backButton.setVisibility(View.GONE);
-        provinceList = DataSupport.findAll(Province.class);
+        provinceList = LitePal.findAll(Province.class);
 
         if (provinceList.size() > 0) {
             dataList.clear();
@@ -137,7 +146,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCities() {
         titleText.setText(selectedProvince.getProvinceName());
         backButton.setVisibility(View.VISIBLE);
-        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class);
+        cityList = LitePal.where("provinceid = ?", String.valueOf(selectedProvince.getId())).find(City.class);
 
         if (cityList.size() > 0) {
             dataList.clear();
@@ -162,7 +171,7 @@ public class ChooseAreaFragment extends Fragment {
     private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
         backButton.setVisibility(View.VISIBLE);
-        countyList = DataSupport.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);
+        countyList = LitePal.where("cityid = ?", String.valueOf(selectedCity.getId())).find(County.class);
 
         if (countyList.size() > 0) {
             dataList.clear();
@@ -187,33 +196,43 @@ public class ChooseAreaFragment extends Fragment {
 
     private void queryFromServer(String address, final String type) {
         showProgressDialog();
-        final String responseText = HttpUtil.sendRequestWithHttpUrl(address).toString();
+        final String responseText = HttpUtil.sendRequestWithHttpUrl(address);
         boolean result = false;
 
-        if ("province".equals(type)) {
-            result = Utility.handleProvinceResponse(responseText);
-        } else if ("city".equals(type)) {
-            result = Utility.handleCityResponse(responseText, selectedProvince.getId());
-        } else if ("county".equals(type)) {
-            result = Utility.handleCountyResponse(responseText, selectedCity.getId());
-        }
+        try {
+            if ("province".equals(type)) {
+                result = Utility.handleProvinceResponse(responseText);
+            } else if ("city".equals(type)) {
+                result = Utility.handleCityResponse(responseText, selectedProvince.getId());
+            } else if ("county".equals(type)) {
+                result = Utility.handleCountyResponse(responseText, selectedCity.getId());
+            }
 
-        if (result) {
+            if (result) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        if ("province".equals(type)) {
+                            queryProvinces();
+                        } else if ("city".equals(type)) {
+                            queryCities();
+                        } else if ("county".equals(type)) {
+                            queryCounties();
+                        }
+                    }
+                });
+            }
+            closeProgressDialog();
+        }catch(Exception e){
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    closeProgressDialog();
-                    if ("province".equals(type)) {
-                        queryProvinces();
-                    } else if ("city".equals(type)) {
-                        queryCities();
-                    } else if ("county".equals(type)) {
-                        queryCounties();
-                    }
+                    Toast.makeText(getContext(), "加载失败",Toast.LENGTH_SHORT).show();
                 }
             });
         }
-        closeProgressDialog();
+
 
     }
 
