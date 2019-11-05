@@ -9,10 +9,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //注册监听函数
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if(prefs.getString("weather", null) != null){
             Intent intent = new Intent(MainActivity.this, weatherActivity.class);
@@ -20,5 +24,6 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
 
 }

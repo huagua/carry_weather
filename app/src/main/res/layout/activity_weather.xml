@@ -203,8 +203,15 @@
                     android:textSize="15sp"
                     android:textColor="#fff000"/>
 
-
             </LinearLayout>
+
+            <Button
+                android:id="@+id/location_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="location"
+                android:textSize="20sp" />
 
         </LinearLayout>
 
