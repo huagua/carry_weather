@@ -34,9 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChooseAreaFragment extends Fragment {
-    public static final int LEVEL_PROVINCE = 0;
-    public static final int LEVEL_CITY = 1;
-    public static final int LEVEL_COUNTY = 2;
+    private static final int LEVEL_PROVINCE = 0;
+    private static final int LEVEL_CITY = 1;
+    private static final int LEVEL_COUNTY = 2;
     private ProgressDialog progressDialog;
     private TextView titleText;
     private Button backButton;
@@ -57,7 +57,7 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 县列表
      */
-    public List<County> countyList;
+    private List<County> countyList;
 
     /**
      * 选中的省份
@@ -92,7 +92,7 @@ public class ChooseAreaFragment extends Fragment {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void  onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
                     queryCities();
@@ -100,7 +100,7 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 }else if(currentLevel == LEVEL_COUNTY) {
-                    String weatherId = countyList.get(position).getWeatherId();
+                    String weatherId = countyList.get(position).getCountyName();
                     Intent intent = new Intent(getActivity(), weatherActivity.class);
                     intent.putExtra("weather_Id", weatherId);
                     startActivity(intent);
@@ -196,7 +196,7 @@ public class ChooseAreaFragment extends Fragment {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
-            queryFromServer(address, "city");
+            queryFromServer(address, "county");
         }
     }
 
@@ -252,7 +252,7 @@ public class ChooseAreaFragment extends Fragment {
                                         queryProvinces();
                                     } else if ("city".equals(type)) {
                                         queryCities();
-                                    } else if ("county".equals(type)) {
+                                    }else if("city".equals(type)){
                                         queryCounties();
                                     }
                                 }

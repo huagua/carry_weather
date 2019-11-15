@@ -6,15 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.baidu.location.LocationClient;
 import com.example.carry_weather.gson.Weather;
 import com.example.carry_weather.service.AutoUpdateService;
 import com.example.carry_weather.util.Utility;
@@ -41,11 +38,7 @@ public class weatherActivity extends AppCompatActivity {
     private TextView airQualityText;
     private TextView airPm25Text;
     private ImageView weatherImage;
-    private Button cityButton;
-    private Button locationButton;
 
-    public LocationClient mLocationClient = null;
-    private MyLocationListener myListener = new MyLocationListener();
     private static final int SHOW_WEATHER_INFO = 1;
 
 
@@ -59,7 +52,8 @@ public class weatherActivity extends AppCompatActivity {
                     showWeatherInfo((Weather)msg.obj);//出错原因：方法调用错误，应用showWeahterInfo（）而且传入的参数是Weather而不是weather
                     break;
                 default:
-                    break; }
+                    break;
+            }
         } };
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,35 +64,10 @@ public class weatherActivity extends AppCompatActivity {
 
         initView();
 
-        /*
-        mLocationClient = new LocationClient(getApplicationContext());
-        //声明LocationClient类
-        mLocationClient.registerLocationListener(myListener);
-        initLocation();
-
-        locationButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                mLocationClient.start();
-        //mLocationClient为初始化过的LocationClient对象
-        //调用LocationClient的start()方法，便可发起定位请求
-            }
-        });
-
-         */
-
-        //按钮点击跳转到选择城市的界面
-        cityButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(weatherActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
+        String weatherId = getIntent().getStringExtra("weather_Id");
 
         if(weatherString != null)
         {
@@ -107,49 +76,17 @@ public class weatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         }else{
             //无缓存时去服务器查询天气
-            String weatherId = getIntent().getStringExtra("weather_id");
             requestWeather(weatherId);
         }
 
     }
-
-    /*
-    //初始化
-    private void initLocation() {
-        LocationClientOption option = new LocationClientOption(); //就是这个方法设置为 true，才能获取当前的位置信息
-        option.setIsNeedAddress(true);
-        option.setOpenGps(true);
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy );
-        mLocationClient.setLocOption(option);
-    }
-
-    public class MyLocationListener extends BDAbstractLocationListener {
-        public String county;
-
-        @Override
-        public void onReceiveLocation(BDLocation location){
-            //此处的BDLocation为定位结果信息类，通过它的各种get方法可获取定位相关的全部结果
-            //以下只列举部分获取地址相关的结果信息
-            //更多结果信息获取说明，请参照类参考中BDLocation类中的说明
-            String addr = location.getAddrStr();    //获取详细地址信息
-            String country = location.getCountry();    //获取国家
-            String province = location.getProvince();    //获取省份
-            String city = location.getCity();    //获取城市
-            String distric = location.getDistrict();    //获取区县
-            String street = location.getStreet();    //获取街道信息
-            county = distric.replaceAll("([区县])", "");
-            requestWeather(county);
-        }
-    }
-
-     */
 
     /**
      * 根据天气id请求城市天气信息
      *
      */
     public void requestWeather(final String weatherId){
-        final String weatherUrl = "http://guolin.tech/api/weather?cityid="+weatherId+"&key=d5be5607186b4b8f8d21ff4750d3cad1";
+        final String weatherUrl = "https://free-api.heweather.com/v5/weather?city="+weatherId+"&key=894fc2a749104d679fa022c3e71afe83";
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -183,14 +120,15 @@ public class weatherActivity extends AppCompatActivity {
                         mHandler.sendMessage(msg);
                     }
 
+                    /*
                     if (weather != null && "ok".equals(weather.status)) {
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(weatherActivity.this).edit();
                         editor.putString("weather", response);
                         editor.apply();
-                        showWeatherInfo(weather);
                     } else {
                         Toast.makeText(weatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                     }
+                     */
 
                 }catch(ProtocolException e){
                     e.printStackTrace();
@@ -228,8 +166,6 @@ public class weatherActivity extends AppCompatActivity {
         airQualityText = findViewById(R.id.air_quality);
         airPm25Text = findViewById(R.id.air_pm25);
         weatherImage = findViewById(R.id.weather_image);
-        cityButton = findViewById(R.id.city_button);
-        locationButton = findViewById(R.id.location_button);
 
         titleCity.setText("N/A");
         titleUpdateTime.setText("N/A");
@@ -239,7 +175,6 @@ public class weatherActivity extends AppCompatActivity {
         windScText.setText("N/A");
         airPm25Text.setText("N/A");
         airQualityText.setText("N/A");
-
 
     }
 
