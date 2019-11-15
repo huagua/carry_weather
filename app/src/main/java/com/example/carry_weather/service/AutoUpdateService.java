@@ -23,7 +23,6 @@ public class AutoUpdateService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId){
         updateWeather();
-        updateBingPic();
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int anHour = 60*1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
@@ -56,64 +55,8 @@ public class AutoUpdateService extends Service {
                 editor.apply();
             }
 
-            /*
-            HttpUtil.sendOkHttpRequest(weatherUrl, new Callback(){
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    String responseText = response.body().string();
-                    Weather weather = Utility.handleWeatherResponse(responseText);
-                    if(weather != null && "ok".equals(weather.status)){
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
-                        editor.putString("weather", responseText);
-                        editor.apply();
-                    }
-                }
-
-                @Override
-                public void onFailure(Call call, IOException e){
-                    e.printStackTrace();
-                }
-
-            });
-
-             */
         }
     }
 
-    /**
-     * 更新必应每日一图
-     * */
-
-    private void updateBingPic(){
-
-        String bingPic = "https://api.neweb.top/bing.php";
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
-        editor.putString("bing_pic", bingPic);
-        editor.apply();
-
-    }
-
-    /*
-    private void updateBingPic(){
-        String requestBingPic = "http://guolin.tech/api/bing_pic";
-        HttpUtil.sendOkHttpRequest(requestBingPic, new Callback() {
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String bingPic = response.body().string();
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(AutoUpdateService.this).edit();
-                editor.putString("bing_pic", bingPic);
-                editor.apply();
-            }
-
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-        });
-    }
-    */
 
 }

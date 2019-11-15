@@ -18,25 +18,31 @@ import androidx.fragment.app.Fragment;
 import com.example.carry_weather.db.City;
 import com.example.carry_weather.db.County;
 import com.example.carry_weather.db.Province;
-import com.example.carry_weather.util.HttpUtil;
 import com.example.carry_weather.util.Utility;
 
 import org.litepal.LitePal;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChooseAreaFragment extends Fragment {
-    public static final int LEVEL_PROVINCE = 0;
-    public static final int LEVEL_CITY = 1;
-    public static final int LEVEL_COUNTY = 2;
+    private static final int LEVEL_PROVINCE = 0;
+    private static final int LEVEL_CITY = 1;
+    private static final int LEVEL_COUNTY = 2;
     private ProgressDialog progressDialog;
     private TextView titleText;
     private Button backButton;
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
-
 
     /**
      * 省列表
@@ -68,6 +74,7 @@ public class ChooseAreaFragment extends Fragment {
      */
     private int currentLevel;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle saveInstanceState) {
         View view = inflater.inflate(R.layout.choose_area, container, false);
@@ -85,7 +92,7 @@ public class ChooseAreaFragment extends Fragment {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void  onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (currentLevel == LEVEL_PROVINCE) {
                     selectedProvince = provinceList.get(position);
                     queryCities();
@@ -93,7 +100,7 @@ public class ChooseAreaFragment extends Fragment {
                     selectedCity = cityList.get(position);
                     queryCounties();
                 }else if(currentLevel == LEVEL_COUNTY) {
-                    String weatherId = countyList.get(position).getWeatherId();
+                    String weatherId = countyList.get(position).getCountyName();
                     Intent intent = new Intent(getActivity(), weatherActivity.class);
                     intent.putExtra("weather_Id", weatherId);
                     startActivity(intent);
@@ -115,6 +122,9 @@ public class ChooseAreaFragment extends Fragment {
 
         queryProvinces();
     }
+
+
+
 
     /**
      * 查询全国所有的省， 优先从数据库查询，如果没有查询到再到服务器上查询
@@ -186,7 +196,7 @@ public class ChooseAreaFragment extends Fragment {
             int provinceCode = selectedProvince.getProvinceCode();
             int cityCode = selectedCity.getCityCode();
             String address = "http://guolin.tech/api/china/" + provinceCode + "/" + cityCode;
-            queryFromServer(address, "city");
+            queryFromServer(address, "county");
         }
     }
 
@@ -194,44 +204,91 @@ public class ChooseAreaFragment extends Fragment {
      * 根据传入的地址和类型从服务器上查询省市县数据
      */
 
-    private void queryFromServer(String address, final String type) {
+    private void queryFromServer(final String address, final String type) {
         showProgressDialog();
-        final String responseText = HttpUtil.sendRequestWithHttpUrl(address);
-        boolean result = false;
 
-        try {
-            if ("province".equals(type)) {
-                result = Utility.handleProvinceResponse(responseText);
-            } else if ("city".equals(type)) {
-                result = Utility.handleCityResponse(responseText, selectedProvince.getId());
-            } else if ("county".equals(type)) {
-                result = Utility.handleCountyResponse(responseText, selectedCity.getId());
-            }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                HttpURLConnection connection = null;
+                BufferedReader reader = null;
 
-            if (result) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
+                try {
+                    URL url = new URL(address);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestMethod("GET");
+                    connection.setConnectTimeout(5000);
+                    connection.setReadTimeout(5000);
+                    InputStream in = connection.getInputStream();
+
+                    reader = new BufferedReader(new InputStreamReader((in)));
+                    StringBuilder responseText = new StringBuilder();
+
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        responseText.append(line);
+                    }
+
+                    String response = responseText.toString();
+
+                    boolean result = false;
+
+                    try {
+
                         if ("province".equals(type)) {
-                            queryProvinces();
+                            result = Utility.handleProvinceResponse(response);
                         } else if ("city".equals(type)) {
-                            queryCities();
+                            result = Utility.handleCityResponse(response, selectedProvince.getId());
                         } else if ("county".equals(type)) {
-                            queryCounties();
+                            result = Utility.handleCountyResponse(response, selectedCity.getId());
+                        }
+
+                        if (result) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    closeProgressDialog();
+                                    if ("province".equals(type)) {
+                                        queryProvinces();
+                                    } else if ("city".equals(type)) {
+                                        queryCities();
+                                    }else if("city".equals(type)){
+                                        queryCounties();
+                                    }
+                                }
+                            });
+                        }
+
+                        closeProgressDialog();
+                    }catch(Exception e){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getContext(), "加载失败",Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                }catch(ProtocolException e){
+                    e.printStackTrace();
+                } catch(MalformedURLException e){
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    if (reader != null) {
+                        try {
+                            reader.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
                     }
-                });
-            }
-            closeProgressDialog();
-        }catch(Exception e){
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Toast.makeText(getContext(), "加载失败",Toast.LENGTH_SHORT).show();
+                    if (connection != null) {
+                        connection.disconnect();
+                    }
                 }
-            });
-        }
+            }
+        }).start();
 
 
     }

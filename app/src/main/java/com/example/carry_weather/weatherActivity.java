@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,16 +38,22 @@ public class weatherActivity extends AppCompatActivity {
     private TextView airQualityText;
     private TextView airPm25Text;
     private ImageView weatherImage;
-    private Button cityButton;
 
+    private static final int SHOW_WEATHER_INFO = 1;
+
+
+
+    //主线程与子线程传递信息
     private Handler mHandler = new Handler() {
+        //内部重写方法
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
-                case 1:
-                    requestWeather((weather) msg.obj);
+                case SHOW_WEATHER_INFO:
+                    showWeatherInfo((Weather)msg.obj);//出错原因：方法调用错误，应用showWeahterInfo（）而且传入的参数是Weather而不是weather
                     break;
                 default:
-                    break; }
+                    break;
+            }
         } };
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,31 +62,12 @@ public class weatherActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_weather);
 
-        //初始化各控件
-        titleCity = findViewById(R.id.city_name);
-        titleUpdateTime = findViewById(R.id.update_time);
-        degreeText = findViewById(R.id.degree_now);
-        weatherInfoText = findViewById(R.id.weather_info);
-        windDirText = findViewById(R.id.wind_dir);
-        windScText = findViewById(R.id.wind_sc);
-        bgImg = findViewById(R.id.bg_img);
-        airQualityText = findViewById(R.id.air_quality);
-        airPm25Text = findViewById(R.id.air_pm25);
-        weatherImage = findViewById(R.id.weather_image);
-        cityButton = findViewById(R.id.city_button);
+        initView();
 
-        //按钮点击跳转到选择城市的界面
-        cityButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(weatherActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
+        String weatherId = getIntent().getStringExtra("weather_Id");
 
         if(weatherString != null)
         {
@@ -91,13 +76,8 @@ public class weatherActivity extends AppCompatActivity {
             showWeatherInfo(weather);
         }else{
             //无缓存时去服务器查询天气
-            String weatherId = getIntent().getStringExtra("weather_id");
-            //requestWeather(weatherId);
-            queryWeather(weatherId);
+            requestWeather(weatherId);
         }
-
-
-
 
     }
 
@@ -105,13 +85,14 @@ public class weatherActivity extends AppCompatActivity {
      * 根据天气id请求城市天气信息
      *
      */
-    public void queryWeather(final String weatherId){
-        final String weatherUrl = "http://guolin.tech/api/weather?cityid="+weatherId+"&key=d5be5607186b4b8f8d21ff4750d3cad1";
+    public void requestWeather(final String weatherId){
+        final String weatherUrl = "https://free-api.heweather.com/v5/weather?city="+weatherId+"&key=894fc2a749104d679fa022c3e71afe83";
         new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpURLConnection connection = null;
                 BufferedReader reader = null;
+                Weather weather = null;
 
                 try {
                     URL url = new URL(weatherUrl);
@@ -129,22 +110,25 @@ public class weatherActivity extends AppCompatActivity {
                         responseText.append(line);
                     }
                     String response = responseText.toString();
-                    final Weather weather = Utility.handleWeatherResponse(response);
+                    weather = Utility.handleWeatherResponse(response);
 
+                    //子线程中new信息，调用mHandler
                     if(weather != null){
                         Message msg =new Message();
-                        msg.what = 1;
-                        msg.obj=weather;
+                        msg.what = SHOW_WEATHER_INFO;
+                        msg.obj = weather;
                         mHandler.sendMessage(msg);
                     }
+
+                    /*
                     if (weather != null && "ok".equals(weather.status)) {
                         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(weatherActivity.this).edit();
                         editor.putString("weather", response);
                         editor.apply();
-                        showWeatherInfo(weather);
                     } else {
                         Toast.makeText(weatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
                     }
+                     */
 
                 }catch(ProtocolException e){
                     e.printStackTrace();
@@ -166,21 +150,31 @@ public class weatherActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
     }
 
+    //初始化界面
+    void initView(){
+        //初始化各控件
+        titleCity = findViewById(R.id.city_name);
+        titleUpdateTime = findViewById(R.id.update_time);
+        degreeText = findViewById(R.id.degree_now);
+        weatherInfoText = findViewById(R.id.weather_info);
+        windDirText = findViewById(R.id.wind_dir);
+        windScText = findViewById(R.id.wind_sc);
+        bgImg = findViewById(R.id.bg_img);
+        airQualityText = findViewById(R.id.air_quality);
+        airPm25Text = findViewById(R.id.air_pm25);
+        weatherImage = findViewById(R.id.weather_image);
 
-    public void requestWeather(Weather weather){
-
-        //final String response =  HttpUtil.sendRequestWithHttpUrl(weatherUrl);
-        //final Weather weather = Utility.handleWeatherResponse(response);
-        if (weather != null && "ok".equals(weather.status)) {
-            SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(weatherActivity.this).edit();
-            editor.putString("weather", weather);
-            editor.apply();
-            showWeatherInfo(weather);
-        } else {
-            Toast.makeText(weatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
-        }
+        titleCity.setText("N/A");
+        titleUpdateTime.setText("N/A");
+        degreeText.setText("N/A");
+        weatherInfoText.setText("N/A");
+        windDirText.setText("N/A");
+        windScText.setText("N/A");
+        airPm25Text.setText("N/A");
+        airQualityText.setText("N/A");
 
     }
 
@@ -212,9 +206,6 @@ public class weatherActivity extends AppCompatActivity {
             airPm25Text.setText(airPm25);
             airQualityText.setText(airQuality);
 
-            Intent intent = new Intent(this, AutoUpdateService.class);
-            startService(intent);
-
             switch (weatherInfo)
             {
                 case "晴":
@@ -237,6 +228,8 @@ public class weatherActivity extends AppCompatActivity {
                     break;
             }
 
+            Intent intent = new Intent(this, AutoUpdateService.class);
+            startService(intent);
 
         }else{
             Toast.makeText(weatherActivity.this, "获取天气信息失败",Toast.LENGTH_SHORT).show();

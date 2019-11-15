@@ -52,17 +52,6 @@
 
 
 
-                <Button
-                    android:id="@+id/city_button"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="城市"
-                    android:textSize="12sp"
-                    android:background="#025953"/>
-
             </RelativeLayout>
 
 
@@ -203,8 +192,8 @@
                     android:textSize="15sp"
                     android:textColor="#fff000"/>
 
-
             </LinearLayout>
+
 
         </LinearLayout>
 
