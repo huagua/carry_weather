@@ -124,8 +124,6 @@ public class ChooseAreaFragment extends Fragment {
     }
 
 
-
-
     /**
      * 查询全国所有的省， 优先从数据库查询，如果没有查询到再到服务器上查询
      */
@@ -289,8 +287,6 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         }).start();
-
-
     }
 
     /**

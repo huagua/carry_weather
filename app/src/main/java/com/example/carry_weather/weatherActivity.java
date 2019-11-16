@@ -64,10 +64,11 @@ public class weatherActivity extends AppCompatActivity {
 
         initView();
 
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
+
         String weatherId = getIntent().getStringExtra("weather_Id");
+
 
         if(weatherString != null)
         {
@@ -78,6 +79,8 @@ public class weatherActivity extends AppCompatActivity {
             //无缓存时去服务器查询天气
             requestWeather(weatherId);
         }
+
+
 
     }
 
@@ -223,8 +226,8 @@ public class weatherActivity extends AppCompatActivity {
                     break;
 
                 default:
-                    weatherImage.setImageResource(R.drawable.sun);
-                    bgImg.setImageResource(R.drawable.bg_sunny);
+                    weatherImage.setImageResource(R.drawable.defult);
+                    bgImg.setImageResource(R.drawable.bg_defult);
                     break;
             }
 
