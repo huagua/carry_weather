@@ -250,7 +250,7 @@ public class ChooseAreaFragment extends Fragment {
                                         queryProvinces();
                                     } else if ("city".equals(type)) {
                                         queryCities();
-                                    }else if("city".equals(type)){
+                                    }else if("county".equals(type)){
                                         queryCounties();
                                     }
                                 }
