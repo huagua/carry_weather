@@ -13,14 +13,19 @@ public class Now {
     @SerializedName("hum")
     public String humidity;
 
-    @SerializedName("wind_dir")
-    public String wind_dir;
-
-    @SerializedName("wind_sc")
-    public String wind_sc;
+    @SerializedName("wind")
+    public Wind wind;
 
     public class More {
         @SerializedName("txt")
         public String info;
+    }
+
+    public class Wind {
+        @SerializedName("sc")
+        public String sc;
+
+        @SerializedName("dir")
+        public String dir;
     }
 }

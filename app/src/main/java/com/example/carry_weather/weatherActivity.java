@@ -203,8 +203,8 @@ public class weatherActivity extends AppCompatActivity {
             String updateTime = weather.basic.update.updateTime.split(" ")[1];
             String degree = weather.now.temperature;
             String weatherInfo = weather.now.more.info;
-            String windDir = weather.now.wind_dir;
-            String windSc = weather.now.wind_sc+"级";
+            String windDir = weather.now.wind.dir;
+            String windSc = weather.now.wind.sc+"级";
             String airQuality = weather.aqi.city.air_quality;
             String airPm25 = weather.aqi.city.air_pm25;
 
