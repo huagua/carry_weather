@@ -37,36 +37,26 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textSize="20sp"
-                        android:textColor="#fff000"/>
+                        android:textColor="#000"/>
 
                     <TextView
                         android:id="@+id/update_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
+                        android:layout_gravity="center_horizontal"
                         android:textSize="10sp"
-                        android:textColor="#fff000"/>
-
+                        android:textColor="#000"/>
 
                 </LinearLayout>
 
-
-
             </RelativeLayout>
-
-
-            <ImageView
-                android:id="@+id/weather_image"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center_horizontal"
-                android:contentDescription="天气图标" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center">
+                android:layout_gravity="center"
+                android:gravity="center">
 
 
 
@@ -75,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:textSize="60sp"
+                    android:textSize="100sp"
                     android:textColor="#000"/>
 
                 <TextView
@@ -83,46 +73,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:paddingTop="15dp"
+                    android:paddingTop="30dp"
                     android:text="℃"
                     android:textSize="20sp"
                     android:textColor="#000"/>
 
+
             </LinearLayout>
 
-
-
             <LinearLayout
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center">
+
+                <ImageView
+                    android:id="@+id/weather_image"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="10dp"
+                    android:contentDescription="天气图标" />
 
                 <TextView
                     android:id="@+id/weather_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="20sp"
-                    android:textColor="#000"
-                    android:layout_marginRight="10dp"/>
-
-                <TextView
-                    android:id="@+id/degree_min"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="20sp"
-                    android:textColor="#000"/>
-
-                <TextView
-                    android:id="@+id/degree_max"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:layout_gravity="center_horizontal"
-                    android:textSize="20sp"
-                    android:textColor="#000"/>
+                    android:textSize="15sp"
+                    android:textColor="#000" />
 
             </LinearLayout>
 
@@ -132,68 +109,86 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:padding="10dp"
-                android:background="#8000">
+                >
 
-                <TextView
-                    android:id="@+id/title_wind"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="风力:"
-                    android:textColor="#fff000"
-                    android:textSize="15sp"/>
+                    android:gravity="center">
 
-                <TextView
-                    android:id="@+id/wind_dir"
+                    <TextView
+                        android:id="@+id/title_wind"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:text="风力:"
+                        android:textColor="#000"
+                        android:textSize="12sp"/>
+
+                    <TextView
+                        android:id="@+id/wind_dir"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="#000"/>
+
+                    <TextView
+                        android:id="@+id/wind_sc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="#000"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="15dp"
+                    android:background="#000"/>
+
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
-                    android:textSize="15sp"
-                    android:textColor="#fff000"/>
-
-
-                <TextView
-                    android:id="@+id/wind_sc"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="15sp"
-                    android:textColor="#fff000"/>
+                    android:gravity="center">
 
+                    <TextView
+                        android:id="@+id/title_air_quality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginRight="10dp"
+                        android:text="空气:"
+                        android:textSize="12sp"
+                        android:textColor="#000"/>
 
-                <TextView
-                    android:id="@+id/title_air_quality"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2.5"
-                    android:gravity="center"
-                    android:text="空气质量："
-                    android:textSize="15sp"
-                    android:textColor="#fff000"/>
+                    <TextView
+                        android:id="@+id/air_pm25"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="#000"/>
 
-                <TextView
-                    android:id="@+id/air_quality"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:gravity="center"
-                    android:textSize="15sp"
-                    android:textColor="#fff000"/>
+                    <TextView
+                        android:id="@+id/air_quality"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:textColor="#000"/>
 
-                <TextView
-                    android:id="@+id/air_pm25"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:textSize="15sp"
-                    android:textColor="#fff000"/>
+                </LinearLayout>
 
             </LinearLayout>
 
+            <include layout="@layout/forecast"/>
 
         </LinearLayout>
 

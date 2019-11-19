@@ -8,13 +8,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carry_weather.gson.Forecast;
 import com.example.carry_weather.gson.Weather;
 import com.example.carry_weather.service.AutoUpdateService;
 import com.example.carry_weather.util.Utility;
@@ -41,6 +44,7 @@ public class weatherActivity extends AppCompatActivity {
     private TextView airQualityText;
     private TextView airPm25Text;
     private ImageView weatherImage;
+    private LinearLayout forecastLayout;
 
     private static final int SHOW_WEATHER_INFO = 1;
 
@@ -132,16 +136,6 @@ public class weatherActivity extends AppCompatActivity {
                         mHandler.sendMessage(msg);
                     }
 
-                    /*
-                    if (weather != null && "ok".equals(weather.status)) {
-                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(weatherActivity.this).edit();
-                        editor.putString("weather", response);
-                        editor.apply();
-                    } else {
-                        Toast.makeText(weatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
-                    }
-                     */
-
                 }catch(ProtocolException e){
                     e.printStackTrace();
                 } catch(MalformedURLException e){
@@ -178,6 +172,7 @@ public class weatherActivity extends AppCompatActivity {
         airQualityText = findViewById(R.id.air_quality);
         airPm25Text = findViewById(R.id.air_pm25);
         weatherImage = findViewById(R.id.weather_image);
+        forecastLayout = findViewById(R.id.forecast_layout);
 
         titleCity.setText("N/A");
         titleUpdateTime.setText("N/A");
@@ -189,8 +184,6 @@ public class weatherActivity extends AppCompatActivity {
         airQualityText.setText("N/A");
 
     }
-
-
 
     /**
      * 处理并展示Weather实体类中的数据
@@ -208,7 +201,6 @@ public class weatherActivity extends AppCompatActivity {
             String airQuality = weather.aqi.city.air_quality;
             String airPm25 = weather.aqi.city.air_pm25;
 
-
             titleCity.setText(cityName);
             titleUpdateTime.setText(updateTime);
             degreeText.setText(degree);
@@ -217,6 +209,42 @@ public class weatherActivity extends AppCompatActivity {
             windScText.setText(windSc);
             airPm25Text.setText(airPm25);
             airQualityText.setText(airQuality);
+
+            forecastLayout.removeAllViews();
+            for(Forecast forecast : weather.forecastList){
+                View view = LayoutInflater.from(this).inflate(R.layout.forecast_item,forecastLayout,false);
+                TextView dateText = view.findViewById(R.id.title_date);
+                TextView infoText = view.findViewById(R.id.info);
+                TextView maxText = view.findViewById(R.id.degree_max);
+                TextView minText = view.findViewById(R.id.degree_min);
+                ImageView infoImage = view.findViewById(R.id.info_image);
+
+                dateText.setText(forecast.date);
+                infoText.setText(forecast.moreinfo.wea_info);
+                maxText.setText(forecast.tmp.max);
+                minText.setText(forecast.tmp.min);
+
+                switch (forecast.moreinfo.wea_info)
+                {
+                    case "晴":
+                        infoImage.setImageResource(R.drawable.sun);
+                        break;
+
+                    case "多云":
+                        infoImage.setImageResource(R.drawable.clouds);
+                        break;
+
+                    case "阴" :
+                        infoImage.setImageResource(R.drawable.overcast);
+                        break;
+
+                    default:
+                        infoImage.setImageResource(R.drawable.defult);
+                        break;
+                }
+
+                forecastLayout.addView(view);
+            }
 
             switch (weatherInfo)
             {
