@@ -54,7 +54,6 @@ public class AutoUpdateService extends Service {
                 editor.putString("weather", response);
                 editor.apply();
             }
-
         }
     }
 

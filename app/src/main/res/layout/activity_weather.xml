@@ -7,6 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".weatherActivity">
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/swipeLayout">
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/bg_img"
             android:layout_width="match_parent"
@@ -37,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textSize="20sp"
-                        android:textColor="#000"/>
+                        android:textColor="#fff"/>
 
                     <TextView
                         android:id="@+id/update_time"
@@ -45,9 +59,17 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
                         android:textSize="10sp"
-                        android:textColor="#000"/>
+                        android:textColor="#fff"/>
 
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/search_button"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_margin="10dp"
+                    android:layout_alignParentLeft="true"
+                    android:background="@drawable/magnifying_glass"/>
 
             </RelativeLayout>
 
@@ -66,7 +88,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:textSize="100sp"
-                    android:textColor="#000"/>
+                    android:textColor="#fff"/>
 
                 <TextView
                     android:id="@+id/degree_icon"
@@ -76,7 +98,7 @@
                     android:paddingTop="30dp"
                     android:text="℃"
                     android:textSize="20sp"
-                    android:textColor="#000"/>
+                    android:textColor="#fff"/>
 
 
             </LinearLayout>
@@ -99,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
-                    android:textColor="#000" />
+                    android:textColor="@color/colorTextWhite" />
 
             </LinearLayout>
 
@@ -124,7 +146,7 @@
                         android:layout_marginRight="10dp"
                         android:gravity="center"
                         android:text="风力:"
-                        android:textColor="#000"
+                        android:textColor="@color/colorTextWhite"
                         android:textSize="12sp"/>
 
                     <TextView
@@ -134,7 +156,7 @@
                         android:layout_marginRight="10dp"
                         android:gravity="center"
                         android:textSize="12sp"
-                        android:textColor="#000"/>
+                        android:textColor="@color/colorTextWhite"/>
 
                     <TextView
                         android:id="@+id/wind_sc"
@@ -142,14 +164,14 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textSize="12sp"
-                        android:textColor="#000"/>
+                        android:textColor="@color/colorTextWhite"/>
 
                 </LinearLayout>
 
                 <View
                     android:layout_width="1dp"
                     android:layout_height="15dp"
-                    android:background="#000"/>
+                    android:background="@color/colorTextWhite"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -165,7 +187,7 @@
                         android:layout_marginRight="10dp"
                         android:text="空气:"
                         android:textSize="12sp"
-                        android:textColor="#000"/>
+                        android:textColor="@color/colorTextWhite"/>
 
                     <TextView
                         android:id="@+id/air_pm25"
@@ -174,7 +196,7 @@
                         android:layout_marginRight="10dp"
                         android:gravity="center"
                         android:textSize="12sp"
-                        android:textColor="#000"/>
+                        android:textColor="@color/colorTextWhite"/>
 
                     <TextView
                         android:id="@+id/air_quality"
@@ -182,7 +204,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:textSize="12sp"
-                        android:textColor="#000"/>
+                        android:textColor="@color/colorTextWhite"/>
 
                 </LinearLayout>
 
@@ -191,5 +213,12 @@
             <include layout="@layout/forecast"/>
 
         </LinearLayout>
+
+        </RelativeLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </FrameLayout>

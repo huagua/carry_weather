@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.carry_weather.gson.Forecast;
 import com.example.carry_weather.gson.Weather;
@@ -45,10 +46,9 @@ public class weatherActivity extends AppCompatActivity {
     private TextView airPm25Text;
     private ImageView weatherImage;
     private LinearLayout forecastLayout;
-
     private static final int SHOW_WEATHER_INFO = 1;
-
-
+    private static final int UPDATE_WEATHER = 2;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     //主线程与子线程传递信息
     private Handler mHandler = new Handler() {
@@ -56,8 +56,10 @@ public class weatherActivity extends AppCompatActivity {
         public void handleMessage(android.os.Message msg) {
             switch (msg.what) {
                 case SHOW_WEATHER_INFO:
+                case UPDATE_WEATHER:
                     showWeatherInfo((Weather)msg.obj);//出错原因：方法调用错误，应用showWeahterInfo（）而且传入的参数是Weather而不是weather
                     break;
+
                 default:
                     break;
             }
@@ -80,28 +82,36 @@ public class weatherActivity extends AppCompatActivity {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
 
-        String weatherId = getIntent().getStringExtra("weather_Id");
+        swipeRefreshLayout = findViewById(R.id.swipeLayout);
+        swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
 
+        final String weatherId;
 
         if(weatherString != null)
         {
             //有缓存时直接解析天气数据
             Weather weather = Utility.handleWeatherResponse(weatherString);
+            weatherId = weather.basic.weatherId;
             showWeatherInfo(weather);
         }else{
             //无缓存时去服务器查询天气
-            requestWeather(weatherId);
+            weatherId = getIntent().getStringExtra("weather_Id");
+            requestWeather(weatherId,1);
         }
 
-
-
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                requestWeather(weatherId,2);
+            }
+        });
     }
 
     /**
      * 根据天气id请求城市天气信息
      *
      */
-    public void requestWeather(final String weatherId){
+    public void requestWeather(final String weatherId, final int num){
         final String weatherUrl = "https://free-api.heweather.com/v5/weather?city="+weatherId+"&key=894fc2a749104d679fa022c3e71afe83";
         new Thread(new Runnable() {
             @Override
@@ -130,8 +140,11 @@ public class weatherActivity extends AppCompatActivity {
 
                     //子线程中new信息，调用mHandler
                     if(weather != null){
+                        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(weatherActivity.this).edit();
+                        editor.putString("weather",response);
+                        editor.apply();
                         Message msg =new Message();
-                        msg.what = SHOW_WEATHER_INFO;
+                        msg.what = num;
                         msg.obj = weather;
                         mHandler.sendMessage(msg);
                     }
@@ -156,6 +169,9 @@ public class weatherActivity extends AppCompatActivity {
                 }
             }
         }).start();
+
+        if(swipeRefreshLayout.isRefreshing())
+            swipeRefreshLayout.setRefreshing(false);
 
     }
 
@@ -238,6 +254,17 @@ public class weatherActivity extends AppCompatActivity {
                         infoImage.setImageResource(R.drawable.overcast);
                         break;
 
+                    case "雪":
+                    case "小雪":
+                        infoImage.setImageResource(R.drawable.little_snow);
+                        break;
+
+                    case "中雪":
+                    case "大雪":
+                        infoImage.setImageResource(R.drawable.heavy_snow);
+                        break;
+
+
                     default:
                         infoImage.setImageResource(R.drawable.defult);
                         break;
@@ -259,12 +286,24 @@ public class weatherActivity extends AppCompatActivity {
                     break;
                 case "阴" :
                     weatherImage.setImageResource(R.drawable.overcast);
-                    bgImg.setImageResource(R.drawable.bg_bad_weather);
+                    bgImg.setImageResource(R.drawable.bg_overcast);
+                    break;
+
+                case "雪":
+                case "小雪":
+                    weatherImage.setImageResource(R.drawable.little_snow);
+                    bgImg.setImageResource(R.drawable.bg_snow);
+                    break;
+
+                case "中雪":
+                case "大雪":
+                    weatherImage.setImageResource(R.drawable.heavy_snow);
+                    bgImg.setImageResource(R.drawable.bg_snow);
                     break;
 
                 default:
                     weatherImage.setImageResource(R.drawable.defult);
-                    bgImg.setImageResource(R.drawable.bg_defult);
+                    bgImg.setImageResource(R.drawable.bg_sunny);
                     break;
             }
 
