@@ -87,18 +87,21 @@ public class ChooseAreaFragment extends Fragment {
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
         linearLayout = view.findViewById(R.id.chooseLayout);
+
+
+        /*
+        if(getActivity() instanceof MainActivity){
+            linearLayout.setBackgroundResource(R.drawable.bg_101);
+        }else if (getActivity() instanceof weatherActivity){
+            linearLayout.setBackgroundColor(Color.WHITE);
+        }
+         */
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
-        if(getActivity() instanceof MainActivity){
-            linearLayout.setBackgroundResource(R.drawable.bg_101);
-        }else if (getActivity() instanceof weatherActivity){
-            linearLayout.setBackgroundColor(Color.WHITE);
-        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

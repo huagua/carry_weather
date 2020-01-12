@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -74,7 +77,7 @@ public class weatherActivity extends AppCompatActivity {
 
         if(Build.VERSION.SDK_INT>=21){  //版本号判断（以下功能只在21及以上版本实现）
             View decorView = getWindow().getDecorView();
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);   //活动的布局会显示在状态栏上面
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LAYOUT_STABLE|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);   //活动的布局会显示在状态栏上面
             getWindow().setStatusBarColor(Color.TRANSPARENT);   //将状态栏设置为透明色
         }
 
@@ -240,6 +243,15 @@ public class weatherActivity extends AppCompatActivity {
             windScText.setText(windSc);
             airPm25Text.setText(airPm25);
             airQualityText.setText(airQuality);
+
+            WindowManager manager = getWindowManager();
+            DisplayMetrics metrics = new DisplayMetrics();
+            manager.getDefaultDisplay().getMetrics(metrics);
+
+            ViewGroup.LayoutParams params = bgImg.getLayoutParams();
+            params.height=metrics.heightPixels;
+            params.width =metrics.widthPixels;
+            bgImg.setLayoutParams(params);
 
             forecastLayout.removeAllViews();
             for(Forecast forecast : weather.forecastList){
