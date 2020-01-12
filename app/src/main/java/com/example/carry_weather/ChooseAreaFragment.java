@@ -2,6 +2,7 @@ package com.example.carry_weather;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +45,7 @@ public class ChooseAreaFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
+    private LinearLayout linearLayout;
 
     /**
      * 省列表
@@ -83,12 +86,19 @@ public class ChooseAreaFragment extends Fragment {
         listView = view.findViewById(R.id.list_view);
         adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
         listView.setAdapter(adapter);
+        linearLayout = view.findViewById(R.id.chooseLayout);
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        if(getActivity() instanceof MainActivity){
+            linearLayout.setBackgroundResource(R.drawable.bg_101);
+        }else if (getActivity() instanceof weatherActivity){
+            linearLayout.setBackgroundColor(Color.WHITE);
+        }
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -101,10 +111,18 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 }else if(currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getCountyName();
-                    Intent intent = new Intent(getActivity(), weatherActivity.class);
-                    intent.putExtra("weather_Id", weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if(getActivity() instanceof MainActivity){
+                        Intent intent = new Intent(getActivity(), weatherActivity.class);
+                        intent.putExtra("weather_Id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }else if (getActivity() instanceof weatherActivity){
+                        linearLayout.setBackgroundColor(Color.WHITE);
+                        weatherActivity activity = (weatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefreshLayout.setRefreshing(true);
+                        activity.requestWeather(weatherId,1);
+                    }
                 }
             }
         });

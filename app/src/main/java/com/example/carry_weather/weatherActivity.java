@@ -1,6 +1,5 @@
 package com.example.carry_weather;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -10,17 +9,19 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.carry_weather.gson.Forecast;
 import com.example.carry_weather.gson.Weather;
-import com.example.carry_weather.service.AutoUpdateService;
 import com.example.carry_weather.util.Utility;
 
 import java.io.BufferedReader;
@@ -48,7 +49,9 @@ public class weatherActivity extends AppCompatActivity {
     private LinearLayout forecastLayout;
     private static final int SHOW_WEATHER_INFO = 1;
     private static final int UPDATE_WEATHER = 2;
-    private SwipeRefreshLayout swipeRefreshLayout;
+    SwipeRefreshLayout swipeRefreshLayout;
+    DrawerLayout drawerLayout;
+    private Button cityButton;
 
     //主线程与子线程传递信息
     private Handler mHandler = new Handler() {
@@ -79,12 +82,21 @@ public class weatherActivity extends AppCompatActivity {
 
         initView();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         String weatherString = prefs.getString("weather", null);
 
         swipeRefreshLayout = findViewById(R.id.swipeLayout);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        cityButton = findViewById(R.id.search_button);
+
+        cityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
         final String weatherId;
 
         if(weatherString != null)
@@ -102,7 +114,10 @@ public class weatherActivity extends AppCompatActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestWeather(weatherId,2);
+                String weatherString = prefs.getString("weather", null);
+                Weather weather = Utility.handleWeatherResponse(weatherString);
+                final String Id = weather.basic.weatherId;
+                requestWeather(Id,2);
             }
         });
     }
@@ -306,9 +321,11 @@ public class weatherActivity extends AppCompatActivity {
                     bgImg.setImageResource(R.drawable.bg_sunny);
                     break;
             }
-
+/*
             Intent intent = new Intent(this, AutoUpdateService.class);
             startService(intent);
+
+ */
 
         }else{
             Toast.makeText(weatherActivity.this, "获取天气信息失败",Toast.LENGTH_SHORT).show();
